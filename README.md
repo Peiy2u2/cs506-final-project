@@ -29,7 +29,7 @@ Data were collected from different regions of brains (including prefrontal corte
 
 - **Batch effect checking**: 
     - Since we have two different batches of snRNA-seq, we need to check batch effect and if necessary, do batch corrections
-	- After normalization,perform PCA on the normalized gene expression data, and draw the PC1-PC2 figure. Color the PCA plot by batch. If the batches cluster separately, it suggests a batch effect (different batches with different colors). 
+	- After normalization, perform PCA on the normalized gene expression data, and draw the PC1-PC2 figure. Color the PCA plot by batch. If the batches cluster separately, it suggests a batch effect (different batches with different colors). 
 
 ## Feature Extraction
 - K-means clustering
