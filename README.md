@@ -15,7 +15,7 @@ And likewise, if the distance of Cell A - another Cell A is further than the dis
 Data were collected from different regions of brains (including prefrontal cortex) of Macaca Mulatta (let's say monkeys). 
 * Data availability
 	* RNA-seq counts data of 36 cells from different regions of 7 (4F + 3M) individuals, with counts data of 25,432 genes: `data/featureCounts_matrix.tsv`
-	* RNA-seq counts data of 27,964 single cells from 2 individuals, with  of 19,605 genes : `data/seurat_merge_processed.csv`
+	* RNA-seq counts data of 27,964 single cells from 2 individuals, with  of 19,605 genes (download the file from this [link](https://drive.google.com/file/d/17wdUNMDrk_AGIX44MOa9itZobufrxgy8/view?usp=drive_link)): `data/seurat_merge_processed.csv`
 
 ## Data Cleaning
 - **Dimension allignment**: 
