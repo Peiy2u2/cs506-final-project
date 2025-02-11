@@ -24,7 +24,7 @@ Data were collected from different regions of brains (including prefrontal corte
     - Align the dimensions of the two datasets by removing unique genes/geneids in each dataset and keeping the common ones. 
 
 - **Normalization**: 
-    - After dimension allignment, normalize the feature counts data by suming up counts of each gene across all cells and dividing each cell's count by the sum of the gene's counts across all cells. 
+    - After dimension alignment, normalize the data by summing up gene expression counts within each cell, and divide each count data count by the sum.
     - This step is to make the data comparable across different cells.
 
 - **Batch effect checking**: 
