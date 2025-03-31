@@ -1,3 +1,7 @@
+## Link of presentation
+[Mid-term presentation](https://youtu.be/5eNkAxTGM9Y)
+
+
 ## How to run the workflow
 Run the following command
 
