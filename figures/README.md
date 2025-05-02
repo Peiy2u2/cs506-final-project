@@ -1,6 +1,10 @@
+## Link of presentation
+[Final presentation]()
+[Mid-term presentation](https://youtu.be/5eNkAxTGM9Y)
+
+
 ## How to run the workflow
 Run the following command: 
-
 `sh run.sh`
 
 ## Project Description
@@ -36,10 +40,10 @@ Also, this research will be more complete if we can have electric-physical data 
 | OLD          | 13,648 | 9         | 13,639    |
 |              | 28,000 | 36        | 27,964    |
 ## Workflow
-![image info](figures/final_workflow.png)
+![[final_workflow.png]]
 
 ## Data Preprocessing
-![image info](figures/data_preprocessing.png)
+![[data_preprocessing.png]]
 
 - **Dimension alignment**:
 	- 19,605 (geneids + genenames) in snRNA-seq counts data 
@@ -52,7 +56,7 @@ Also, this research will be more complete if we can have electric-physical data 
 		- We have two options in this section: either involving the patch-seq cells data or not when we're doing batch correction on the snRNA-seq cells data. In another word, we **may nor may not consider the 36 patch-seq cells as the third batch**. The benefit to involve patch-seq cells is better for data integrations - making patch-seq cells and snRNA-seq cells more comparable in a single embedding space. 
 		- Batch correction by **NMF (non-negative matrix factorization)**: NMF is particularly well-suited for sparse, non-negative data like scRNA-seq/snRNA-seq data. It only works with non-negative values, and extracts biologically meaningful signals by factorizing the count matrix into interpretable components, and thus preserves non-negativity for gene expression data. 
 			- How NMF works
-			![image info](figures/NMF.png)
+			![[NMF.png]]
 			- The hyper-parameter `n_components` must be chosen carefully. We implemented a function to aim to find the minimum number of components that explain at least 90% of variance per batch (if not exceeding the max_components we set which is 9999 in default). 
 			- However, given the size of our data is huge (28k cells x 19k genes in snRNA-seq counts data before dimension alignment), and NMF is using iterative, non-convex optimization, so it can be very computationally expensive and time consuming. 
 			- Tricks to make the program run faster: 1) Parallelizing code to make it run faster: use all available CPU cores for batch-level parallelism. We use 4 cores (slots) in parallel, each with at least 8 GB of memory. 2) Using incremental NMF (`MiniBatchNMF` in `scikit-learn`) instead of standard NMF: MiniBatchNMF is a variant of NMF to handle large-scale datasets efficiently. It processes data in small batches (mini-batches) instead of loading the entire dataset into memory. Its memory-efficient nature, lower computational cost and faster convergence  per iteration, and compatibility with paralleled processing makes it much faster than standard NMF. 
@@ -68,15 +72,15 @@ Also, this research will be more complete if we can have electric-physical data 
 		     - $s(i)$ Close to -1: Likely misclassified, should belong to another cluster.
 		* Overall Silhouette Score (the average silhouette coefficient over all points): $$S = \frac{1}{N} \sum_{i=1}^{N} s(i)\in (-1, 1)$$
 		* It turns out the optimal n_components would be 5 given by a lower non-negative value of Silhouette score after batch correction, either involving the patch-seq cells as the third batch or not. 
-			![image info](figures/nmf_5.png)
-			![image info](figures/nmf_10.png)
+			![[Pasted image 20250401214052.png]]
+			![[Pasted image 20250401214010.png]]
 - **Normalization**:
 	- After dimension alignment, normalize the data by summing up gene expression counts within each cell (row), and divide each count data in the row by the sum.  
 	- This step is to make the data comparable across different cells because gene expression levels can vary significantly for different cells.
 	- Why we do normalization after batch correction instead of doing it before? 
 		* Batch correction often relies on detecting and adjusting systematic differences between batches, and performing normalization before batch correction can mask these differences, making batch correction ineffective.
 		- We synthesized two batches of data (left plot). If we do NMF correction then data normalization, those batches of data would distribute more evenly and spread out (middle plot). However, if we do normalization before correction, NMF doesn't do the correction properly because normalizing the data mask their batch effects that will exist even after correction (right plot).
-		![image info](figures/why_correction_before_normalization.png)
+		![[why_correction_before_normalization.png]]
 
 ## Data Visualization
 - Plotting: 
@@ -89,7 +93,7 @@ Also, this research will be more complete if we can have electric-physical data 
 	- Distribution of cell type annotations using built-in algorithms in Seurat  within each cluster
 - K-means clustering (based on **Euclidean distance**)
 	- Perform K-means clustering on the PCA results or embedded vectors. Draw the K-means clustering plot in 2D under different k. 
-	- Involving patch-seq cells as the third batch at batch correction is essential to integrate and embed heterogeneous datasets in the same space. Originally extremely sparse snRNA-seq data has became comparable when we involve patch-seq data as the third batch during batch correction. In this sense, they integrate with each other in the same transcriptomic space. ![image info](figures/integration_is_essential.png)
+	- Involving patch-seq cells as the third batch at batch correction is essential to integrate and embed heterogeneous datasets in the same space. Originally extremely sparse snRNA-seq data has became comparable when we involve patch-seq data as the third batch during batch correction. In this sense, they integrate with each other in the same transcriptomic space. ![[integration_is_essential.png]]
 	- To find the optimal k with the best clustering result
 		- Look for the k that maximize Silhouette score: the larger the  Silhouette score, the better separation of clusters: point are better-clustered, closer to its own cluster, and further away from others. 
 		- Look for the elbow point of Within-cluster sum of squares (WCSS, or intertia) under different k. 
@@ -99,17 +103,14 @@ Also, this research will be more complete if we can have electric-physical data 
 				$\mu_i$: Centroid of cluster $i$
 				$\| x_j - \mu_i \|$: Euclidean distance between a point and its cluster center
 			As $k$ increases, WCSS always decreases (more clusters causes points closer to centers). However, the rate of decrease slows down. The elbow point is where the marginal gain (reduction in WCSS) drops sharply. After this point, adding more clusters doesn't significantly improve the clustering. The elbow point represents the point of diminishing returns and gives a balance between model simplicity and data fit.
-		- Optimal k of K-means by features from PCA (3 batches for correction during data preprocessing): 5, or 10 ![image info](figures/Silhouette_score_WCSS_PCA_3_batches.png)
-		- Optimal k of K-means by features from Node2vec (3 batches for correction during data preprocessing): 5, or 10 ![image info](figures/Silhouette_score_WCSS_node2vec_3_batches.png)
+		- Optimal k of K-means by features from PCA (3 batches for correction during data preprocessing): 5, or 10 ![[Silhouette_score_WCSS_PCA_3_batches.png]]
+		- Optimal k of K-means by features from Node2vec (3 batches for correction during data preprocessing): 5, or 10 ![[Silhouette_score_WCSS_node2vec_3_batches.png]]
 	- Plots of first 2 dimensions
-		- PCA ![image info](figures/PC1_PC2.png)
-		- Node2vec ![image info](figures/emb1_emb2.png)
+		- PCA ![[PC1_PC2.png]]
+		- Node2vec ![[emb1_emb2.png]]
 	- Boxplot of sum of gene counts distribution within each cluster
-		- PCA ![image info](figures/pca_gene counts.png)
-		- Node2vec ![image info](figures/node2vec_gene counts.png)
+		- PCA ![[pca_gene counts.png]]
+		- Node2vec ![[node2vec_gene counts.png]]
 	- Boxplot of Seurat cell type annotation distribution within each cluster
-		- PCA ![image info](figures/pca_seurat_cell_type_annotation .png)
-		- Node2vec ![image info](figures/node2vec_seurat_cell_type_annotation.png)
-		- Number of dominant Seurat cell type annotation for 36 Patch-seq cells
-			- Features extracted by PCA ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_pca.png)
-			- Features extracted by Node2vec ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_node2vec.png)
+		- PCA ![[pca_seurat_cell_type_annotation .png]]
+		- Node2vec ![[node2vec_seurat_cell_type_annotation .png]]
