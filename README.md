@@ -74,13 +74,13 @@ Also, this research will be more complete if we can have electric-physical data 
 			* Intra-cluster distance $a(i)$: the average distance between $i$  and all other points in the same cluster.
 			* Inter-cluster distance $b(i)$: the average distance between $i$ and all points in the nearest other cluster.
 			* Formula of Silhouette score:  
-			$$\begin{aligned} s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1) \end{aligned}$$
+			$$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1)$$
 
 		     - $s(i)$  Close to 1: Well-clustered, compact, and well-separated.
 		     - $s(i)$ Close to 0: Near the decision boundary between clusters.
 		     - $s(i)$ Close to -1: Likely misclassified, should belong to another cluster.
 		* Overall Silhouette Score (the average silhouette coefficient over all points): 
-		$$\begin{aligned} S = \frac{1}{N} \sum_{i=1}^{N} s(i)\in (-1, 1) \end{aligned}$$
+		$$S = \frac{1}{N} \sum_{i=1}^{N} s(i)\in (-1, 1)$$
 		
 		* It turns out the optimal n_components would be 5 given by a lower non-negative value of Silhouette score after batch correction, either involving the patch-seq cells as the third batch or not. 
 			![image info](figures/nmf_5.png)
@@ -109,7 +109,7 @@ Also, this research will be more complete if we can have electric-physical data 
 		- Look for the k that maximize Silhouette score: the larger the  Silhouette score, the better separation of clusters: point are better-clustered, closer to its own cluster, and further away from others. 
 		- Look for the elbow point of Within-cluster sum of squares (WCSS, or intertia) under different k. 
 		
-			$$\begin{aligned}\text{WCSS} = \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2 \end{aligned}$$
+			$$WCSS= \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2$$
 
 			Where: 
 			- $C_i$: Cluster $i$
