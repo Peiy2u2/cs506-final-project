@@ -109,10 +109,10 @@ Also, this research will be more complete if we can have electric-physical data 
 		- PCA ![image info](figures/PC1_PC2.png)
 		- Node2vec ![image info](figures/emb1_emb2.png)
 	- Boxplot of sum of gene counts distribution within each cluster
-		- PCA ![image info](figures/pca_gene counts.png)
-		- Node2vec ![image info](figures/node2vec_gene counts.png)
+		- PCA ![image info](figures/pca_gene_counts.png)
+		- Node2vec ![image info](figures/node2vec_gene_counts.png)
 	- Boxplot of Seurat cell type annotation distribution within each cluster
-		- PCA ![image info](figures/pca_seurat_cell_type_annotation .png)
+		- PCA ![image info](figures/pca_seurat_cell_type_annotation.png)
 		- Node2vec ![image info](figures/node2vec_seurat_cell_type_annotation.png)
 		- Number of dominant Seurat cell type annotation for 36 Patch-seq cells
 			- Features extracted by PCA ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_pca.png)
