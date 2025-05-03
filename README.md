@@ -73,11 +73,17 @@ Also, this research will be more complete if we can have electric-physical data 
 		* Silhouette score for a data point $i$:
 			* Intra-cluster distance $a(i)$: the average distance between $i$  and all other points in the same cluster.
 			* Inter-cluster distance $b(i)$: the average distance between $i$ and all points in the nearest other cluster.
-			* Formula of Silhouette score: $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1)$$
+			* Formula of Silhouette score: 
+
+			$$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1)$$
+
 		     - $s(i)$  Close to 1: Well-clustered, compact, and well-separated.
 		     - $s(i)$ Close to 0: Near the decision boundary between clusters.
 		     - $s(i)$ Close to -1: Likely misclassified, should belong to another cluster.
-		* Overall Silhouette Score (the average silhouette coefficient over all points): $$S = \frac{1}{N} \sum_{i=1}^{N} s(i)\in (-1, 1)$$
+		* Overall Silhouette Score (the average silhouette coefficient over all points): 
+		
+		$$S = \frac{1}{N} \sum_{i=1}^{N} s(i)\in (-1, 1)$$
+		
 		* It turns out the optimal n_components would be 5 given by a lower non-negative value of Silhouette score after batch correction, either involving the patch-seq cells as the third batch or not. 
 			![image info](figures/nmf_5.png)
 			![image info](figures/nmf_10.png)
@@ -104,11 +110,14 @@ Also, this research will be more complete if we can have electric-physical data 
 	- To find the optimal k with the best clustering result
 		- Look for the k that maximize Silhouette score: the larger the  Silhouette score, the better separation of clusters: point are better-clustered, closer to its own cluster, and further away from others. 
 		- Look for the elbow point of Within-cluster sum of squares (WCSS, or intertia) under different k. 
-			- WCSS $$\text{WCSS} = \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2$$
-			Where:
-				$C_i$: Cluster $i$
-				$\mu_i$: Centroid of cluster $i$
-				$\| x_j - \mu_i \|$: Euclidean distance between a point and its cluster center
+			
+			$$\text{WCSS} = \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2$$
+
+			Where: 
+			- $C_i$: Cluster $i$
+			- $\mu_i$: Centroid of cluster $i$
+			- $\| x_j - \mu_i \|$: Euclidean distance between a point and its cluster center
+
 			As $k$ increases, WCSS always decreases (more clusters causes points closer to centers). However, the rate of decrease slows down. The elbow point is where the marginal gain (reduction in WCSS) drops sharply. After this point, adding more clusters doesn't significantly improve the clustering. The elbow point represents the point of diminishing returns and gives a balance between model simplicity and data fit.
 		- Optimal k of K-means by features from PCA (3 batches for correction during data preprocessing): 5, or 10 ![image info](figures/Silhouette_score_WCSS_PCA_3_batches.png)
 		- Optimal k of K-means by features from Node2vec (3 batches for correction during data preprocessing): 5, or 10 ![image info](figures/Silhouette_score_WCSS_node2vec_3_batches.png)
@@ -124,3 +133,4 @@ Also, this research will be more complete if we can have electric-physical data 
 		- Number of dominant Seurat cell type annotation for 36 Patch-seq cells
 			- Features extracted by PCA ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_pca.png)
 			- Features extracted by Node2vec ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_node2vec.png)
+
