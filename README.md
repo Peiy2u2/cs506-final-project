@@ -1,6 +1,8 @@
-## Links of presenation 
+## Links for final presenation materials
 
-[Final Presentation](https://youtu.be/dUw60L4Zrfs)
+[1. Ten-mintues video](https://youtu.be/dUw60L4Zrfs)
+
+[2. Complete slides](https://drive.google.com/file/d/1KgWovtJjX2aVMqDfxjEHYC6Xi1H0xB5b/view?usp=drive_link)
 
 ## How to run the workflow
 Run the following command: 
