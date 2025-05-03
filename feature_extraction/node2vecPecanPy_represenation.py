@@ -1,19 +1,15 @@
 import argparse
-
 import networkx as nx
 import pandas as pd
-from node2vec import Node2Vec
+from pecanpy import pecanpy as node2vec
 
 
 class GeneExpressionGraph:
-    """
-    A class to represent a gene expression graph where nodes are cells and genes,
-    and edges are weighted by gene expression counts.
-    """
+    """A class to represent a gene expression graph where nodes are cells and genes,
+    and edges are weighted by gene expression counts."""
 
     def __init__(self, csv_path: str):
-        """
-        Initializes the GeneExpressionGraph.
+        """Initializes the GeneExpressionGraph.
 
         Parameters:
         - csv_path (str): Path to the preprocessed gene expression CSV file.
@@ -23,8 +19,7 @@ class GeneExpressionGraph:
         self._load_data()
 
     def _load_data(self):
-        """
-        Loads gene expression data from CSV and constructs a bipartite graph.
+        """Loads gene expression data from CSV and constructs a bipartite graph.
         - Nodes: Cells and Genes.
         - Edges: Between cells and genes, weighted by gene expression counts.
         - Edges with weight 0 are not added.
@@ -47,10 +42,8 @@ class GeneExpressionGraph:
         return self.graph
 
 
-class Node2vecEmbedding:
-    """
-    A class to generate 128-dimensional Node2vec embeddings for cell nodes in a gene expression graph.
-    """
+class PecanPyEmbedding:
+    """A class to generate node2vec embeddings using PecanPy library."""
 
     def __init__(
         self,
@@ -63,10 +56,9 @@ class Node2vecEmbedding:
         workers: int = 4,
         window: int = 10,
         min_count: int = 1,
-        batch_words: int = 4,
+        verbose: bool = True,
     ):
-        """
-        Initializes the Node2vecEmbedding class.
+        """Initializes the PecanPyEmbedding class.
 
         Parameters:
         - graph (nx.Graph): The gene expression graph.
@@ -76,9 +68,9 @@ class Node2vecEmbedding:
         - workers (int): Number of CPU cores for parallel computation.
         - window (int): Window size for Word2Vec model.
         - min_count (int): Minimum count for Word2Vec model.
-        - batch_words (int): Batch size for Word2Vec model.
-        - p (float): Return parameter for Node2Vec (controls likelihood of revisiting nodes).
-        - q (float): In-out parameter for Node2Vec (controls exploration vs. homophily).
+        - p (float): Return parameter for Node2Vec.
+        - q (float): In-out parameter for Node2Vec.
+        - verbose (bool): Whether to show progress messages.
         """
         self.graph = graph
         self.dimensions = dimensions
@@ -87,62 +79,64 @@ class Node2vecEmbedding:
         self.workers = workers
         self.window = window
         self.min_count = min_count
-        self.batch_words = batch_words
         self.p = p
         self.q = q
+        self.verbose = verbose
         self.model = None
         self.embeddings = None
 
     def generate_embeddings(self):
-        """
-        Runs the  algorithm to generate embeddings for cell nodes.
-        """
-        # Run Node2Vec
-        node2vec = Node2Vec(
-            self.graph,
-            dimensions=self.dimensions,
-            walk_length=self.walk_length,
-            num_walks=self.num_walks,
-            workers=self.workers,
-            p=self.p,
-            q=self.q,
-        )
-        self.model = node2vec.fit(
-            window=self.window, min_count=self.min_count, batch_words=self.batch_words
-        )
+        """Runs the PecanPy algorithm to generate embeddings."""
+        # Save graph to temporary edgelist file
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w+', suffix='.edg') as f:
+            # Write edges with weights
+            for u, v, data in self.graph.edges(data=True):
+                weight = data.get('weight', 1.0)
+                f.write(f"{u}\t{v}\t{weight}\n")
+            f.flush()
 
-        # Extract embeddings for cell nodes only
+            # Initialize PecanPy graph object
+            g = node2vec.DenseOTF(p=self.p, q=self.q, workers=self.workers, verbose=self.verbose)
+            g.read_edg(f.name, weighted=True, directed=False)
+
+            # Generate embeddings
+            self.model = g.embed(
+                dim=self.dimensions,
+                num_walks=self.num_walks,
+                walk_length=self.walk_length,
+                window_size=self.window,
+            )
+
+        # Convert embeddings to DataFrame for cell nodes only
         cell_nodes = [
-            node
+            str(node)
             for node, attr in self.graph.nodes(data=True)
             if attr.get("type") == "cell"
         ]
-        embeddings = {cell: self.model.wv[cell] for cell in cell_nodes}
+        
+        # Create mapping from node names to indices
+        node_id_map = {node: idx for idx, node in enumerate(g.nodes)}
+        
+        embeddings = {}
+        for node in cell_nodes:
+            if node in node_id_map:
+                embeddings[node] = self.model[node_id_map[node]]
 
-        # Convert to DataFrame
-        self.embeddings = pd.DataFrame.from_dict(embeddings, orient="index")
-        self.embeddings.columns = [
-            f"embedding_dimension_{i+1}" for i in range(self.dimensions)
-        ]
+        self.embeddings = pd.DataFrame.from_dict(embeddings, orient='index')
+        self.embeddings.columns = [f"embedding_dim_{i+1}" for i in range(self.dimensions)]
 
     def save_embeddings(self, output_path: str):
-        """
-        Saves the generated embeddings to a CSV file.
-
-        Parameters:
-        - output_path (str): Path to save the embeddings CSV file.
-        """
+        """Saves the generated embeddings to a CSV file."""
         if self.embeddings is not None:
             self.embeddings.to_csv(output_path)
         else:
-            raise ValueError(
-                "Embeddings have not been generated. Run generate_embeddings() first."
-            )
+            raise ValueError("Embeddings have not been generated. Run generate_embeddings() first.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Run Node2Vec for gene expression graph embedding."
+        description="Run Node2Vec for gene expression graph embedding using PecanPy."
     )
     parser.add_argument(
         "--input_path",
@@ -180,8 +174,8 @@ if __name__ == "__main__":
     gene_graph = GeneExpressionGraph(args.input_path)
     graph = gene_graph.get_graph()
 
-    # Step 2: Run Node2Vec to get embeddings
-    deepwalk = Node2vecEmbedding(
+    # Generate embeddings using PecanPy
+    pecanpy_embedding = PecanPyEmbedding(
         graph,
         p=args.p,
         q=args.q,
@@ -189,8 +183,8 @@ if __name__ == "__main__":
         walk_length=args.walk_length,
         num_walks=args.num_walks,
     )
-    deepwalk.generate_embeddings()
+    pecanpy_embedding.generate_embeddings()
 
-    # Step 3: Save the cell embeddings
-    deepwalk.save_embeddings(args.output_path)
+    # Save the cell embeddings
+    pecanpy_embedding.save_embeddings(args.output_path)
     print(f"Cell embeddings saved to {args.output_path}")

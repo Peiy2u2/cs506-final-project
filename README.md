@@ -5,7 +5,12 @@
 [2. Complete slides](https://drive.google.com/file/d/1KgWovtJjX2aVMqDfxjEHYC6Xi1H0xB5b/view?usp=drive_link)
 
 ## How to run the workflow
-Run the following command: 
+
+1. Install all the required python libraries by
+
+`pip install -r requirements.txt`
+
+2. Run the following command 
 
 `sh run.sh`
 

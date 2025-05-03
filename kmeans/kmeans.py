@@ -1,5 +1,6 @@
 from copy import deepcopy
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -307,8 +308,8 @@ if __name__ == "__main__":
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    # # Visulize the k-WCSS curve and k-Silhouette_score curve to find the optimal k for k-means
-    # evaluate_kmeans_clustering(df_patch_snRNA_counts_features, args.output_folder, n_cluster_list)
+    # Visulize the k-WCSS curve and k-Silhouette_score curve to find the optimal k for k-means
+    evaluate_kmeans_clustering(df_patch_snRNA_counts_features, args.output_folder, n_cluster_list)
 
     # Visualize Seurat annotations clusters (PC1-PC2 for PCA features; UMAP1-UMAP2 for Node2vec features)
     seurat_cell_type_annotation_cluster_visualization(
@@ -316,13 +317,13 @@ if __name__ == "__main__":
         output_folder=args.output_folder, 
         batch_suffix=batch_suffix)
 
-    # # Permutation of n_cluster with different labels 
-    # for n_clusters in n_cluster_list:
-    #     perform_kmeans_clustering(
-    #         data=df_patch_snRNA_counts_features,
-    #         n_clusters=n_clusters,
-    #         output_image=f'{args.output_folder}/kmeans_{n_clusters}_{batch_suffix}.png',
-    #         output_csv=f'{args.output_folder}/kmeans_{n_clusters}_{batch_suffix}.csv',
-    #         label_columns=['seurat_cell_type_annotation', 'brain_region', 'age_category'],
-    #         dominant_label_names=['kmeans_cluster_dominant_seurat_cell_type_annotation', 'kmeans_cluster_dominant_brain_region', 'kmeans_cluster_dominant_age_category']
-    #     )
+    # Permutation of n_cluster with different labels 
+    for n_clusters in n_cluster_list:
+        perform_kmeans_clustering(
+            data=df_patch_snRNA_counts_features,
+            n_clusters=n_clusters,
+            output_image=f'{args.output_folder}/kmeans_{n_clusters}_{batch_suffix}.png',
+            output_csv=f'{args.output_folder}/kmeans_{n_clusters}_{batch_suffix}.csv',
+            label_columns=['seurat_cell_type_annotation', 'brain_region', 'age_category'],
+            dominant_label_names=['kmeans_cluster_dominant_seurat_cell_type_annotation', 'kmeans_cluster_dominant_brain_region', 'kmeans_cluster_dominant_age_category']
+        )

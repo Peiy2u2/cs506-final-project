@@ -16,7 +16,7 @@ This script is a part of preprocessing for the counts data from patch-seq and sn
 """
 
 
-def determine_optimal_NMF_n_components(batch_data, max_components=10, random_state=42):
+def determine_optimal_NMF_n_components(batch_data, max_components=5, random_state=42):
     """
     Determine the optimal number of MiniBatchNMF components that explains at least 90% of variance.
     If no component set explains 90% variance, select the highest possible one that is not exceeding max_components.
