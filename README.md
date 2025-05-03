@@ -75,7 +75,7 @@ Also, this research will be more complete if we can have electric-physical data 
 			* Inter-cluster distance $b(i)$: the average distance between $i$ and all points in the nearest other cluster.
 			* Formula of Silhouette score: 
 
-			$$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1)$$
+			$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))} \in (-1, 1)$
 
 		     - $s(i)$  Close to 1: Well-clustered, compact, and well-separated.
 		     - $s(i)$ Close to 0: Near the decision boundary between clusters.
@@ -111,7 +111,7 @@ Also, this research will be more complete if we can have electric-physical data 
 		- Look for the k that maximize Silhouette score: the larger the  Silhouette score, the better separation of clusters: point are better-clustered, closer to its own cluster, and further away from others. 
 		- Look for the elbow point of Within-cluster sum of squares (WCSS, or intertia) under different k. 
 			
-			$$\text{WCSS} = \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2$$
+			$\text{WCSS} = \sum_{i=1}^{k} \sum_{x_j \in C_i} \| x_j - \mu_i \|^2$
 
 			Where: 
 			- $C_i$: Cluster $i$
