@@ -133,3 +133,4 @@ Also, this research will be more complete if we can have electric-physical data 
 		- Number of dominant Seurat cell type annotation for 36 Patch-seq cells
 			- Features extracted by PCA ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_pca.png)
 			- Features extracted by Node2vec ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_node2vec.png)
+
