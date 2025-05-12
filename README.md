@@ -132,3 +132,38 @@ Also, this research will be more complete if we can have electric-physical data 
 			- Features extracted by PCA ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_pca.png)
 			- Features extracted by Node2vec ![image info](figures/k_means_clustering_results_of_36_patch_seq_cells_features_extracted_by_node2vec.png)
 
+
+## Discussion
+* PCA-derived features yield more distinct dominant cell types across clusters
+	- Node2vec features show much less diversity: dominated by Excitatory neuron and Oligodendrocyte
+	- PCA-based clustering leads to clearer stratification of Seurat cell type proportions with increasing k
+	- Node2vec-based clustering maintains relatively uniform Seurat annotation distributions, implying less biological separation
+* PCA features better preserve biological variability from gene expression
+	- PCA directly captures the majority of variances from the gene expression matrix
+	- In low dimensions (like top 2–10 PCs), it still retains meaningful biological patterns → helpful when the sample size is small
+* Node2vec, although powerful in large heterogeneous graphs, underperform here due to
+	- Over-smoothing effects in dense bipartite cell-gene graphs (graphs that have two disjoint sets of nodes, and edges only exist between nodes of different sets)
+	- Patch-seq cells being minority nodes may receive over-generalized embeddings
+	- The embeddings may become less informative for rare cells (36 patch-seq cells in this case)
+	- High-dimensional methods like Node2Vec may spread cells out too uniformly, especially if the structure is dominated by dense coexpression
+
+## Conclusion
+* Patch-seq cells display heterogeneous transcriptional identities
+	- Astrocyte: 23 cells - majority of Patch-seq cells assigned to astrocyte-dominant clusters
+	- Excitatory neuron: 6 cells - significant representation of excitatory neuronal identity
+	- Interneuron: 6 cells - consistent detection of inhibitory neuronal population
+	- OPC (Oligodendrocyte Precursor Cell): 1 cell - minor population present
+* Our approach is well-suited for capturing fine-grained cell type distinctions
+	- With a prominent bias towards astrocytes, neuronal subtypes (both excitatory and inhibitory) remain substantially represented
+	- The distribution of cell types is more biologically distinct at k = 10 for K-means, supporting the use of our PCA-based approach with three-batch correction using NMF in high-resolution clustering of Patch-seq cells
+
+## Future Directions
+* Validate Seurat cell type annotations
+	- Current assignments are based on marker gene expression identified by ChatGPT
+	- Manual curation and domain expert validation are necessary to ensure biological accuracy
+* Utilize complete Patch-seq data
+	- Integrate electrophysiological and morphological data from Patch-seq, if available, to enrich multimodal cell characterization
+	- Explore correlations between electrical behavior, structural features, and transcriptomic identity
+* Bridge the gap between electrophysiology and transcriptomics
+	- Link cellular electrical properties with gene expression signatures
+	- Advance our  understanding of neuronal diversity and brain function
